@@ -6,7 +6,6 @@
   <title>Roblox Profile Viewer</title>
   <style>
     * { box-sizing: border-box; }
-
     :root {
       --bg-1: #070b14;
       --bg-2: #0c1220;
@@ -20,10 +19,9 @@
       --border: rgba(255,255,255,.08);
       --shadow: 0 22px 55px rgba(0,0,0,.34);
       --success: #76f7a1;
+      --warn: #ffd98a;
     }
-
     html { scroll-behavior: smooth; }
-
     body {
       margin: 0;
       min-height: 100vh;
@@ -36,390 +34,95 @@
         linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
       padding: 20px;
     }
-
-    .shell {
-      width: 100%;
-      max-width: 1320px;
-      margin: 0 auto;
-      display: grid;
-      gap: 18px;
-    }
-
-    .toolbar,
-    .card {
+    .shell { width: 100%; max-width: 1320px; margin: 0 auto; display: grid; gap: 18px; }
+    .toolbar, .card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 24px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
     }
-
-    .toolbar {
-      padding: 18px;
-      position: sticky;
-      top: 12px;
-      z-index: 20;
-    }
-
-    .toolbar-grid {
-      display: grid;
-      grid-template-columns: 1.3fr auto auto auto;
-      gap: 12px;
-      align-items: center;
-    }
-
+    .toolbar { padding: 18px; position: sticky; top: 12px; z-index: 20; }
+    .toolbar-grid { display: grid; grid-template-columns: 1.3fr auto auto auto; gap: 12px; align-items: center; }
     .input-wrap { position: relative; }
-
     .input {
-      width: 100%;
-      height: 52px;
-      border: 1px solid rgba(255,255,255,.08);
-      outline: none;
-      border-radius: 16px;
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      padding: 0 16px 0 46px;
-      font-size: 16px;
+      width: 100%; height: 52px; border: 1px solid rgba(255,255,255,.08); outline: none;
+      border-radius: 16px; background: rgba(255,255,255,.04); color: var(--text);
+      padding: 0 16px 0 46px; font-size: 16px;
     }
-
     .input::placeholder { color: #87a0c8; }
-
-    .input-icon {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      opacity: .75;
-      font-size: 18px;
-    }
-
+    .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: .75; font-size: 18px; }
     .btn {
-      height: 52px;
-      border: 0;
-      border-radius: 16px;
-      padding: 0 18px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      color: white;
-      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      height: 52px; border: 0; border-radius: 16px; padding: 0 18px; font-size: 15px; font-weight: 700;
+      cursor: pointer; color: white; transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
     }
-
     .btn:hover { transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 12px 28px rgba(0, 184, 255, .18);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 18px;
-    }
-
-    .left-col,
-    .right-col {
-      display: grid;
-      gap: 18px;
-      align-self: start;
-    }
-
-    .profile-card {
-      padding: 22px;
-      text-align: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .profile-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top center, rgba(123, 97, 255, .14), transparent 38%);
-      pointer-events: none;
-    }
-
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 12px 28px rgba(0, 184, 255, .18); }
+    .btn-secondary { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+    .layout { display: grid; grid-template-columns: 380px 1fr; gap: 18px; }
+    .left-col, .right-col { display: grid; gap: 18px; align-self: start; }
+    .profile-card { padding: 22px; text-align: center; overflow: hidden; position: relative; }
+    .profile-card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at top center, rgba(123, 97, 255, .14), transparent 38%); pointer-events: none; }
     .avatar-main-wrap {
-      width: 270px;
-      height: 270px;
-      margin: 0 auto 16px;
-      border-radius: 28px;
-      overflow: hidden;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      position: relative;
-      z-index: 1;
+      width: 270px; height: 270px; margin: 0 auto 16px; border-radius: 28px; overflow: hidden;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); position: relative; z-index: 1;
     }
-
-    .avatar-main-wrap img,
-    .mini-head img,
-    .thumb-image-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
+    .avatar-main-wrap img, .mini-head img, .thumb-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .mini-head {
-      width: 86px;
-      height: 86px;
-      border-radius: 22px;
-      overflow: hidden;
-      margin: 0 auto 16px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 10px 24px rgba(0,0,0,.18);
-      position: relative;
-      z-index: 1;
+      width: 86px; height: 86px; border-radius: 22px; overflow: hidden; margin: 0 auto 16px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      position: relative; z-index: 1;
     }
-
     .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      background: rgba(0,184,255,.12);
-      border: 1px solid rgba(0,184,255,.2);
-      color: #d9f5ff;
-      margin-bottom: 12px;
-      position: relative;
-      z-index: 1;
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; font-size: 13px;
+      background: rgba(0,184,255,.12); border: 1px solid rgba(0,184,255,.2); color: #d9f5ff; margin-bottom: 12px; position: relative; z-index: 1;
     }
-
-    h1 {
-      margin: 0;
-      font-size: 31px;
-      line-height: 1.12;
-      position: relative;
-      z-index: 1;
-    }
-
-    .handle {
-      margin-top: 8px;
-      color: var(--muted);
-      position: relative;
-      z-index: 1;
-    }
-
-    .badges {
-      margin-top: 14px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.08);
-      color: #dde8ff;
-    }
-
+    h1 { margin: 0; font-size: 31px; line-height: 1.12; position: relative; z-index: 1; }
+    .handle { margin-top: 8px; color: var(--muted); position: relative; z-index: 1; }
+    .badges { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; position: relative; z-index: 1; }
+    .tag { padding: 7px 12px; border-radius: 999px; font-size: 13px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); color: #dde8ff; }
     .description {
-      margin-top: 16px;
-      padding: 15px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
-      text-align: left;
-      line-height: 1.6;
-      color: #dce7ff;
-      min-height: 94px;
-      position: relative;
-      z-index: 1;
-      word-break: break-word;
+      margin-top: 16px; padding: 15px; border-radius: 18px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06);
+      text-align: left; line-height: 1.6; color: #dce7ff; min-height: 94px; position: relative; z-index: 1; word-break: break-word;
     }
-
-    .actions {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      position: relative;
-      z-index: 1;
-    }
-
+    .actions { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; position: relative; z-index: 1; }
     .panel { padding: 20px; }
-
-    .panel-title {
-      font-size: 23px;
-      font-weight: 800;
-      margin: 0;
-    }
-
-    .panel-subtitle {
-      margin-top: 8px;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    .status-row {
-      margin-top: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-
+    .panel-title { font-size: 23px; font-weight: 800; margin: 0; }
+    .panel-subtitle { margin-top: 8px; color: var(--muted); line-height: 1.55; }
+    .status-row { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
     .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
-      color: #edf3ff;
-      min-height: 48px;
+      display: inline-flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 16px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); color: #edf3ff; min-height: 48px;
     }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 16px rgba(118,247,161,.75);
-      flex: 0 0 auto;
-    }
-
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 16px rgba(118,247,161,.75); flex: 0 0 auto; }
+    .dot.warn { background: var(--warn); box-shadow: 0 0 16px rgba(255,217,138,.75); }
     .error {
-      margin-top: 14px;
-      display: none;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255, 92, 92, .11);
-      border: 1px solid rgba(255, 92, 92, .22);
-      color: #ffd7d7;
-      line-height: 1.5;
+      margin-top: 14px; display: none; padding: 14px; border-radius: 16px; background: rgba(255, 92, 92, .11);
+      border: 1px solid rgba(255, 92, 92, .22); color: #ffd7d7; line-height: 1.5;
     }
-
-    .stats-grid,
-    .thumb-grid,
-    .recent-grid {
-      margin-top: 16px;
-      display: grid;
-      gap: 14px;
-    }
-
+    .stats-grid, .thumb-grid, .recent-grid { margin-top: 16px; display: grid; gap: 14px; }
     .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .thumb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .recent-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-
-    .stat-box,
-    .thumb-box,
-    .recent-box,
-    .summary-box {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-
+    .stat-box, .thumb-box, .recent-box, .summary-box { background: var(--panel-2); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
     .stat-box { padding: 16px; }
-
-    .label {
-      color: #93a3c7;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: 8px;
-    }
-
-    .value {
-      font-size: 19px;
-      font-weight: 800;
-      word-break: break-word;
-    }
-
+    .label { color: #93a3c7; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+    .value { font-size: 19px; font-weight: 800; word-break: break-word; }
     .thumb-box { padding: 14px; }
-
-    .thumb-title {
-      font-size: 14px;
-      color: #dce7ff;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .thumb-image-wrap {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      overflow: hidden;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
-    }
-
-    .summary-box {
-      padding: 18px;
-      line-height: 1.65;
-      color: #d9e4ff;
-    }
-
-    .recent-box {
-      padding: 14px;
-      cursor: pointer;
-      transition: transform .15s ease, border-color .15s ease, background .15s ease;
-    }
-
-    .recent-box:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0,184,255,.2);
-      background: rgba(255,255,255,.05);
-    }
-
-    .recent-name {
-      font-weight: 800;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-
-    .recent-handle {
-      color: var(--muted);
-      font-size: 13px;
-      word-break: break-word;
-    }
-
-    .empty {
-      padding: 16px;
-      color: var(--muted);
-      background: rgba(255,255,255,.03);
-      border: 1px dashed rgba(255,255,255,.08);
-      border-radius: 18px;
-      line-height: 1.5;
-    }
-
-    .footer-note {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-      margin-top: 14px;
-    }
-
+    .thumb-title { font-size: 14px; color: #dce7ff; margin-bottom: 10px; font-weight: 700; }
+    .thumb-image-wrap { width: 100%; aspect-ratio: 1 / 1; border-radius: 18px; overflow: hidden; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); }
+    .summary-box { padding: 18px; line-height: 1.65; color: #d9e4ff; }
+    .recent-box { padding: 14px; cursor: pointer; transition: transform .15s ease, border-color .15s ease, background .15s ease; }
+    .recent-box:hover { transform: translateY(-2px); border-color: rgba(0,184,255,.2); background: rgba(255,255,255,.05); }
+    .recent-name { font-weight: 800; font-size: 15px; margin-bottom: 4px; }
+    .recent-handle { color: var(--muted); font-size: 13px; word-break: break-word; }
+    .empty { padding: 16px; color: var(--muted); background: rgba(255,255,255,.03); border: 1px dashed rgba(255,255,255,.08); border-radius: 18px; line-height: 1.5; }
+    .footer-note { color: var(--muted); font-size: 13px; line-height: 1.55; margin-top: 14px; }
+    .source-note { margin-top: 14px; font-size: 13px; color: var(--muted); }
     a { color: #cfe1ff; }
-
-    @media (max-width: 1100px) {
-      .layout { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 920px) {
-      .toolbar-grid { grid-template-columns: 1fr 1fr; }
-      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
+    @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+    @media (max-width: 920px) { .toolbar-grid { grid-template-columns: 1fr 1fr; } .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 640px) {
       body { padding: 14px; }
       .toolbar-grid, .stats-grid, .thumb-grid, .recent-grid, .actions { grid-template-columns: 1fr; }
@@ -448,7 +151,7 @@
         <section class="card profile-card">
           <div class="avatar-main-wrap"><img id="avatarMain" src="https://placehold.co/720x720/10182c/ffffff?text=Chargement" alt="Avatar Roblox complet" /></div>
           <div class="mini-head"><img id="avatarHead" src="https://placehold.co/420x420/10182c/ffffff?text=Chargement" alt="Tête Roblox" /></div>
-          <div class="pill">Profil Roblox dynamique</div>
+          <div class="pill">Roblox viewer stable</div>
           <h1 id="displayName">Chargement...</h1>
           <div id="usernameHandle" class="handle">@mythique_play</div>
           <div class="badges">
@@ -468,10 +171,10 @@
       <div class="right-col">
         <section class="card panel">
           <div class="panel-title">Vue du profil</div>
-          <div class="panel-subtitle">Recherche par pseudo, lien partageable, historique local, avatar complet et tête séparée, avec méthodes de secours pour limiter les erreurs réseau.</div>
+          <div class="panel-subtitle">Cette version essaie d’abord les endpoints RoProxy, puis Roblox direct, puis un proxy CORS générique en dernier recours.</div>
 
           <div class="status-row">
-            <div class="status"><span class="dot"></span><span id="statusText">Initialisation...</span></div>
+            <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Initialisation...</span></div>
           </div>
           <div id="errorBox" class="error"></div>
 
@@ -496,6 +199,7 @@
           </div>
 
           <div id="summaryBox" class="summary-box">Les données publiques du compte s’afficheront ici.</div>
+          <div class="source-note" id="sourceNote">Source active : attente...</div>
         </section>
 
         <section class="card panel">
@@ -509,7 +213,7 @@
 
   <script>
     const DEFAULT_USERNAME = "mythique_play";
-    const STORAGE_KEY = "roblox_viewer_recent_users_v2";
+    const STORAGE_KEY = "roblox_viewer_recent_users_v3";
 
     const usernameInput = document.getElementById("usernameInput");
     const searchBtn = document.getElementById("searchBtn");
@@ -519,9 +223,11 @@
     const copyUsernameBtn = document.getElementById("copyUsernameBtn");
 
     const statusText = document.getElementById("statusText");
+    const statusDot = document.getElementById("statusDot");
     const errorBox = document.getElementById("errorBox");
     const recentGrid = document.getElementById("recentGrid");
     const summaryBox = document.getElementById("summaryBox");
+    const sourceNote = document.getElementById("sourceNote");
 
     const avatarMain = document.getElementById("avatarMain");
     const avatarHead = document.getElementById("avatarHead");
@@ -544,12 +250,54 @@
 
     let currentProfileUrl = "https://www.roblox.com/search/users?keyword=" + encodeURIComponent(DEFAULT_USERNAME);
     let currentUsername = DEFAULT_USERNAME;
+    let activeSource = "aucune";
 
-    const proxies = [
-      (url) => url,
-      (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-      (url) => `https://cors.isomorphic-git.org/${url}`
-    ];
+    const sourcePlans = {
+      roproxy: {
+        name: "RoProxy",
+        search: (username) => [
+          `https://users.roproxy.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=10`,
+          `https://users.roproxy.com/v1/usernames/users`
+        ],
+        profile: (userId) => [
+          `https://users.roproxy.com/v1/users/${userId}`
+        ],
+        avatar: (userId, type, size) => [
+          type === "head"
+            ? `https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${userId}&size=${size}&format=Png&isCircular=false`
+            : `https://thumbnails.roproxy.com/v1/users/avatar?userIds=${userId}&size=${size}&format=Png&isCircular=false`
+        ]
+      },
+      roblox: {
+        name: "Roblox direct",
+        search: (username) => [
+          `https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=10`,
+          `https://users.roblox.com/v1/usernames/users`
+        ],
+        profile: (userId) => [
+          `https://users.roblox.com/v1/users/${userId}`
+        ],
+        avatar: (userId, type, size) => [
+          type === "head"
+            ? `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=${size}&format=Png&isCircular=false`
+            : `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=${size}&format=Png&isCircular=false`
+        ]
+      },
+      cors: {
+        name: "Proxy CORS",
+        search: (username) => [
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=10`)}`
+        ],
+        profile: (userId) => [
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://users.roblox.com/v1/users/${userId}`)}`
+        ],
+        avatar: (userId, type, size) => [
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(type === "head"
+            ? `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=${size}&format=Png&isCircular=false`
+            : `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=${size}&format=Png&isCircular=false`)}`
+        ]
+      }
+    };
 
     function sanitizeUsername(value) {
       return String(value || "").trim().replace(/^@+/, "").slice(0, 40);
@@ -566,8 +314,9 @@
       history.replaceState({}, "", url.toString());
     }
 
-    function setStatus(text) {
+    function setStatus(text, warn = false) {
       statusText.textContent = text;
+      statusDot.className = warn ? "dot warn" : "dot";
     }
 
     function showError(message) {
@@ -593,14 +342,20 @@
       return `https://placehold.co/${size}x${size}/10182c/ffffff?text=${encodeURIComponent(text)}`;
     }
 
-    async function fetchJsonWithFallback(url) {
+    async function fetchJson(url, options) {
+      const response = await fetch(url, options || { cache: "no-store" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    }
+
+    async function tryMany(requests) {
       let lastError = null;
-      for (const buildUrl of proxies) {
-        const finalUrl = buildUrl(url);
+      for (const req of requests) {
         try {
-          const response = await fetch(finalUrl, { cache: "no-store" });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return await response.json();
+          const result = await fetchJson(req.url, req.options);
+          activeSource = req.sourceName;
+          sourceNote.textContent = `Source active : ${req.sourceName}`;
+          return result;
         } catch (error) {
           lastError = error;
         }
@@ -609,24 +364,62 @@
     }
 
     async function getUserBySearch(username) {
-      const url = `https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=10`;
-      const data = await fetchJsonWithFallback(url);
-      const items = Array.isArray(data.data) ? data.data : [];
-      const exact = items.find(item => String(item.name || "").toLowerCase() === username.toLowerCase());
-      if (exact) return exact;
-      if (items.length) return items[0];
+      const reqs = [];
+      for (const key of ["roproxy", "roblox", "cors"]) {
+        const plan = sourcePlans[key];
+        const urls = plan.search(username);
+        if (urls[0]) {
+          reqs.push({ url: urls[0], sourceName: plan.name });
+        }
+        if (urls[1]) {
+          reqs.push({
+            url: urls[1],
+            sourceName: plan.name,
+            options: {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ usernames: [username], excludeBannedUsers: false })
+            }
+          });
+        }
+      }
+
+      for (const req of reqs) {
+        try {
+          const data = await fetchJson(req.url, req.options);
+          activeSource = req.sourceName;
+          sourceNote.textContent = `Source active : ${req.sourceName}`;
+
+          if (Array.isArray(data.data)) {
+            const exact = data.data.find(item => String(item.name || item.requestedUsername || "").toLowerCase() === username.toLowerCase());
+            if (exact) return exact;
+            if (data.data.length) return data.data[0];
+          }
+        } catch (error) {}
+      }
       throw new Error("Utilisateur Roblox introuvable.");
     }
 
     async function getUserProfile(userId) {
-      return await fetchJsonWithFallback(`https://users.roblox.com/v1/users/${userId}`);
+      const reqs = [];
+      for (const key of ["roproxy", "roblox", "cors"]) {
+        const plan = sourcePlans[key];
+        for (const url of plan.profile(userId)) {
+          reqs.push({ url, sourceName: plan.name });
+        }
+      }
+      return await tryMany(reqs);
     }
 
     async function getAvatarThumbnail(userId, type, size) {
-      const url = type === "head"
-        ? `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=${size}&format=Png&isCircular=false`
-        : `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=${size}&format=Png&isCircular=false`;
-      const data = await fetchJsonWithFallback(url);
+      const reqs = [];
+      for (const key of ["roproxy", "roblox", "cors"]) {
+        const plan = sourcePlans[key];
+        for (const url of plan.avatar(userId, type, size)) {
+          reqs.push({ url, sourceName: plan.name });
+        }
+      }
+      const data = await tryMany(reqs);
       return data && data.data && data.data[0] ? data.data[0].imageUrl : "";
     }
 
@@ -664,13 +457,14 @@
         await navigator.clipboard.writeText(text);
         setStatus(successText);
       } catch {
-        setStatus("Copie impossible depuis ce navigateur.");
+        setStatus("Copie impossible depuis ce navigateur.", true);
       }
     }
 
     function setLoadingState(username) {
       const safeName = sanitizeUsername(username) || DEFAULT_USERNAME;
       currentUsername = safeName;
+      activeSource = "aucune";
       displayName.textContent = "Chargement...";
       usernameHandle.textContent = `@${safeName}`;
       description.textContent = "Récupération des informations publiques du profil...";
@@ -684,6 +478,7 @@
       valueBanned.textContent = "...";
       profileLink.textContent = "...";
       summaryBox.textContent = "Les données publiques du compte s’afficheront ici.";
+      sourceNote.textContent = "Source active : attente...";
       avatarMain.src = getFallbackAvatar("Chargement", 720);
       avatarHead.src = getFallbackAvatar("Chargement", 420);
       thumbFull.src = getFallbackAvatar("Chargement", 720);
@@ -702,10 +497,10 @@
         const basicUser = await getUserBySearch(username);
         const userId = basicUser.id;
 
-        setStatus("Récupération des détails du profil...");
+        setStatus(`Profil trouvé via ${activeSource}, récupération des détails...`);
         const profile = await getUserProfile(userId);
 
-        setStatus("Récupération des miniatures d’avatar...");
+        setStatus(`Récupération des miniatures via ${activeSource}...`);
         const [fullAvatar, headAvatar] = await Promise.allSettled([
           getAvatarThumbnail(userId, "full", "720x720"),
           getAvatarThumbnail(userId, "head", "420x420")
@@ -725,11 +520,9 @@
         displayName.textContent = finalDisplayName;
         usernameHandle.textContent = `@${finalUsername}`;
         description.textContent = finalDescription;
-
         badgeId.textContent = `ID: ${userId}`;
         badgeBan.textContent = `Banni: ${finalBanned}`;
         badgeDate.textContent = `Création: ${finalCreated}`;
-
         valueUsername.textContent = finalUsername;
         valueDisplayName.textContent = finalDisplayName;
         valueUserId.textContent = String(userId);
@@ -737,19 +530,16 @@
         valueBanned.textContent = finalBanned;
         profileLink.href = currentProfileUrl;
         profileLink.textContent = currentProfileUrl;
-
         avatarMain.src = fullAvatarUrl;
         thumbFull.src = fullAvatarUrl;
         avatarHead.src = headAvatarUrl;
         thumbHead.src = headAvatarUrl;
-
         summaryBox.innerHTML = `Nom Roblox : <strong>${finalUsername}</strong><br>Display Name : <strong>${finalDisplayName}</strong><br>ID : <strong>${userId}</strong><br>Création : <strong>${finalCreated}</strong><br>Banni : <strong>${finalBanned}</strong><br>Description : <strong>${finalDescription.replace(/</g, "&lt;")}</strong>`;
-
         saveRecentUser({ username: finalUsername, displayName: finalDisplayName, userId });
-        setStatus("Profil chargé avec succès.");
+        setStatus(`Profil chargé avec succès via ${activeSource}.`);
       } catch (error) {
-        setStatus("Impossible de charger le profil.");
-        showError(`Erreur lors de la récupération : ${error.message || "Failed to fetch"}. Certains réseaux ou navigateurs peuvent bloquer les requêtes externes vers Roblox.`);
+        setStatus("Impossible de charger le profil.", true);
+        showError(`Erreur lors de la récupération : ${error.message || "Failed to fetch"}. Essaie à nouveau ou change de réseau si Roblox ou le proxy bloque les requêtes externes.`);
         avatarMain.src = getFallbackAvatar(username, 720);
         avatarHead.src = getFallbackAvatar(username, 420);
         thumbFull.src = getFallbackAvatar(username, 720);
@@ -762,17 +552,14 @@
     usernameInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") loadUser(usernameInput.value);
     });
-
     shareBtn.addEventListener("click", async () => {
       const url = new URL(window.location.href);
       url.searchParams.set("user", currentUsername);
       await copyText(url.toString(), "Lien copié dans le presse-papiers.");
     });
-
     copyUsernameBtn.addEventListener("click", async () => {
       await copyText(currentUsername, "Pseudo copié.");
     });
-
     openProfileBtn.addEventListener("click", () => {
       window.open(currentProfileUrl, "_blank", "noopener,noreferrer");
     });
