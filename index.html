@@ -3,230 +3,547 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Roblox Viewer - mythique_play</title>
+  <title>Roblox Profile Viewer</title>
   <style>
     * { box-sizing: border-box; }
+
+    :root {
+      --bg-1: #070b14;
+      --bg-2: #0c1220;
+      --bg-3: #121b31;
+      --panel: rgba(18, 25, 43, 0.88);
+      --panel-2: rgba(25, 34, 58, 0.92);
+      --text: #f5f7ff;
+      --muted: #9fb0d1;
+      --accent: #00b8ff;
+      --accent-2: #7b61ff;
+      --border: rgba(255,255,255,.08);
+      --shadow: 0 22px 55px rgba(0,0,0,.34);
+      --success: #76f7a1;
+    }
+
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Arial, sans-serif;
-      color: #fff;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(108,92,231,.22), transparent 25%),
-        radial-gradient(circle at top right, rgba(0,184,255,.18), transparent 20%),
-        linear-gradient(160deg, #070b14 0%, #0b1120 60%, #11192c 100%);
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        radial-gradient(circle at top left, rgba(123, 97, 255, .20), transparent 24%),
+        radial-gradient(circle at top right, rgba(0, 184, 255, .18), transparent 22%),
+        radial-gradient(circle at bottom center, rgba(0, 184, 255, .08), transparent 28%),
+        linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
+      padding: 20px;
     }
-    .app {
+
+    .shell {
       width: 100%;
-      max-width: 1050px;
+      max-width: 1320px;
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 20px;
+      gap: 18px;
     }
+
+    .toolbar,
     .card {
-      background: rgba(20, 27, 45, 0.9);
-      border: 1px solid rgba(255,255,255,.08);
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,.35);
-      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
     }
-    .left {
-      padding: 24px;
-      text-align: center;
+
+    .toolbar {
+      padding: 18px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
     }
-    .avatar-box {
-      width: 250px;
-      height: 250px;
-      margin: 0 auto 18px;
-      border-radius: 26px;
-      overflow: hidden;
+
+    .toolbar-grid {
+      display: grid;
+      grid-template-columns: 1.3fr auto auto auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input {
+      width: 100%;
+      height: 52px;
       border: 1px solid rgba(255,255,255,.08);
+      outline: none;
+      border-radius: 16px;
       background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 0 16px 0 46px;
+      font-size: 16px;
     }
-    .avatar-box img {
+
+    .input::placeholder { color: #87a0c8; }
+
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: .75;
+      font-size: 18px;
+    }
+
+    .btn {
+      height: 52px;
+      border: 0;
+      border-radius: 16px;
+      padding: 0 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 28px rgba(0, 184, 255, .18);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 18px;
+    }
+
+    .left-col,
+    .right-col {
+      display: grid;
+      gap: 18px;
+      align-self: start;
+    }
+
+    .profile-card {
+      padding: 22px;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .profile-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top center, rgba(123, 97, 255, .14), transparent 38%);
+      pointer-events: none;
+    }
+
+    .avatar-main-wrap {
+      width: 270px;
+      height: 270px;
+      margin: 0 auto 16px;
+      border-radius: 28px;
+      overflow: hidden;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    .avatar-main-wrap img,
+    .mini-head img,
+    .thumb-image-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
-    .badge {
-      display: inline-block;
+
+    .mini-head {
+      width: 86px;
+      height: 86px;
+      border-radius: 22px;
+      overflow: hidden;
+      margin: 0 auto 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      position: relative;
+      z-index: 1;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(0,184,255,.13);
-      border: 1px solid rgba(0,184,255,.24);
+      font-size: 13px;
+      background: rgba(0,184,255,.12);
+      border: 1px solid rgba(0,184,255,.2);
       color: #d9f5ff;
-      font-size: 14px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
     }
+
     h1 {
       margin: 0;
-      font-size: 30px;
+      font-size: 31px;
+      line-height: 1.12;
+      position: relative;
+      z-index: 1;
     }
+
     .handle {
       margin-top: 8px;
-      color: #a7b4d0;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
     }
-    .desc {
+
+    .badges {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tag {
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #dde8ff;
+    }
+
+    .description {
       margin-top: 16px;
-      padding: 14px;
+      padding: 15px;
       border-radius: 18px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.06);
-      color: #dbe6ff;
       text-align: left;
+      line-height: 1.6;
+      color: #dce7ff;
+      min-height: 94px;
+      position: relative;
+      z-index: 1;
+      word-break: break-word;
+    }
+
+    .actions {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel { padding: 20px; }
+
+    .panel-title {
+      font-size: 23px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .panel-subtitle {
+      margin-top: 8px;
+      color: var(--muted);
       line-height: 1.55;
-      min-height: 80px;
     }
-    .right {
-      padding: 24px;
-    }
-    .top {
+
+    .status-row {
+      margin-top: 16px;
       display: flex;
-      justify-content: space-between;
-      gap: 12px;
       flex-wrap: wrap;
+      gap: 12px;
       align-items: center;
     }
-    .title {
-      font-size: 26px;
-      font-weight: 700;
-    }
-    .subtitle {
-      color: #a7b4d0;
-      margin-top: 6px;
-      line-height: 1.5;
-    }
-    .btn {
-      border: 0;
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      color: white;
-      background: linear-gradient(135deg, #00b8ff, #6c5ce7);
-    }
+
     .status {
-      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       padding: 12px 14px;
       border-radius: 16px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.06);
-      color: #eaf1ff;
+      color: #edf3ff;
+      min-height: 48px;
     }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 16px rgba(118,247,161,.75);
+      flex: 0 0 auto;
+    }
+
     .error {
       margin-top: 14px;
+      display: none;
       padding: 14px;
       border-radius: 16px;
-      background: rgba(255, 82, 82, .12);
-      border: 1px solid rgba(255, 82, 82, .24);
-      color: #ffd8d8;
-      display: none;
+      background: rgba(255, 92, 92, .11);
+      border: 1px solid rgba(255, 92, 92, .22);
+      color: #ffd7d7;
       line-height: 1.5;
     }
-    .grid {
-      margin-top: 18px;
+
+    .stats-grid,
+    .thumb-grid,
+    .recent-grid {
+      margin-top: 16px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
     }
-    .box {
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
+
+    .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .thumb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .recent-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+
+    .stat-box,
+    .thumb-box,
+    .recent-box,
+    .summary-box {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
     }
+
+    .stat-box { padding: 16px; }
+
     .label {
-      font-size: 12px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
       color: #93a3c7;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
       margin-bottom: 8px;
     }
+
     .value {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 19px;
+      font-weight: 800;
       word-break: break-word;
     }
-    .summary {
-      margin-top: 18px;
-      padding: 16px;
+
+    .thumb-box { padding: 14px; }
+
+    .thumb-title {
+      font-size: 14px;
+      color: #dce7ff;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .thumb-image-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
       border-radius: 18px;
+      overflow: hidden;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .summary-box {
+      padding: 18px;
+      line-height: 1.65;
       color: #d9e4ff;
-      line-height: 1.6;
     }
+
+    .recent-box {
+      padding: 14px;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .recent-box:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0,184,255,.2);
+      background: rgba(255,255,255,.05);
+    }
+
+    .recent-name {
+      font-weight: 800;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .recent-handle {
+      color: var(--muted);
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .empty {
+      padding: 16px;
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+      border: 1px dashed rgba(255,255,255,.08);
+      border-radius: 18px;
+      line-height: 1.5;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      margin-top: 14px;
+    }
+
     a { color: #cfe1ff; }
-    @media (max-width: 900px) {
-      .app { grid-template-columns: 1fr; }
+
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
     }
-    @media (max-width: 620px) {
-      .grid { grid-template-columns: 1fr; }
-      .avatar-box { width: 220px; height: 220px; }
+
+    @media (max-width: 920px) {
+      .toolbar-grid { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      .toolbar-grid, .stats-grid, .thumb-grid, .recent-grid, .actions { grid-template-columns: 1fr; }
+      .avatar-main-wrap { width: 230px; height: 230px; }
       h1 { font-size: 26px; }
-      .title { font-size: 22px; }
+      .panel-title { font-size: 21px; }
     }
   </style>
 </head>
 <body>
-  <main class="app">
-    <section class="card left">
-      <div class="avatar-box">
-        <img id="avatar" src="https://placehold.co/720x720/10182c/ffffff?text=Chargement" alt="Avatar Roblox" />
-      </div>
-      <div class="badge">Roblox Profile</div>
-      <h1 id="displayName">Chargement...</h1>
-      <div class="handle" id="username">@mythique_play</div>
-      <div class="desc" id="description">Récupération des informations publiques du profil...</div>
-    </section>
-
-    <section class="card right">
-      <div class="top">
-        <div>
-          <div class="title">Utilisateur ciblé : mythique_play</div>
-          <div class="subtitle">Cette version utilise plusieurs méthodes de secours pour éviter l’erreur « Failed to fetch ».</div>
+  <div class="shell">
+    <section class="toolbar">
+      <div class="toolbar-grid">
+        <div class="input-wrap">
+          <span class="input-icon">🔎</span>
+          <input id="usernameInput" class="input" type="text" placeholder="Entrer un pseudo Roblox" value="mythique_play" maxlength="40" />
         </div>
-        <button class="btn" id="reloadBtn">Actualiser</button>
+        <button id="searchBtn" class="btn btn-primary">Rechercher</button>
+        <button id="shareBtn" class="btn btn-secondary">Copier le lien</button>
+        <button id="refreshBtn" class="btn btn-secondary">Actualiser</button>
       </div>
-
-      <div class="status" id="status">Initialisation...</div>
-      <div class="error" id="errorBox"></div>
-
-      <div class="grid">
-        <div class="box"><div class="label">Username</div><div class="value" id="valueUsername">mythique_play</div></div>
-        <div class="box"><div class="label">Display Name</div><div class="value" id="valueDisplayName">...</div></div>
-        <div class="box"><div class="label">User ID</div><div class="value" id="valueId">...</div></div>
-        <div class="box"><div class="label">Création</div><div class="value" id="valueCreated">...</div></div>
-        <div class="box"><div class="label">Banni</div><div class="value" id="valueBanned">...</div></div>
-        <div class="box"><div class="label">Profil</div><div class="value"><a id="profileLink" target="_blank" rel="noopener noreferrer" href="https://www.roblox.com/search/users?keyword=mythique_play">Ouvrir le profil</a></div></div>
-      </div>
-
-      <div class="summary" id="summary">Les données publiques s’afficheront ici.</div>
     </section>
-  </main>
+
+    <div class="layout">
+      <div class="left-col">
+        <section class="card profile-card">
+          <div class="avatar-main-wrap"><img id="avatarMain" src="https://placehold.co/720x720/10182c/ffffff?text=Chargement" alt="Avatar Roblox complet" /></div>
+          <div class="mini-head"><img id="avatarHead" src="https://placehold.co/420x420/10182c/ffffff?text=Chargement" alt="Tête Roblox" /></div>
+          <div class="pill">Profil Roblox dynamique</div>
+          <h1 id="displayName">Chargement...</h1>
+          <div id="usernameHandle" class="handle">@mythique_play</div>
+          <div class="badges">
+            <span class="tag" id="badgeId">ID: ...</span>
+            <span class="tag" id="badgeBan">Banni: ...</span>
+            <span class="tag" id="badgeDate">Création: ...</span>
+          </div>
+          <div id="description" class="description">Récupération des informations publiques du profil...</div>
+          <div class="actions">
+            <button id="openProfileBtn" class="btn btn-primary">Ouvrir le profil</button>
+            <button id="copyUsernameBtn" class="btn btn-secondary">Copier le pseudo</button>
+          </div>
+          <div class="footer-note">Astuce : appuie sur Entrée dans le champ de recherche pour charger un autre compte.</div>
+        </section>
+      </div>
+
+      <div class="right-col">
+        <section class="card panel">
+          <div class="panel-title">Vue du profil</div>
+          <div class="panel-subtitle">Recherche par pseudo, lien partageable, historique local, avatar complet et tête séparée, avec méthodes de secours pour limiter les erreurs réseau.</div>
+
+          <div class="status-row">
+            <div class="status"><span class="dot"></span><span id="statusText">Initialisation...</span></div>
+          </div>
+          <div id="errorBox" class="error"></div>
+
+          <div class="stats-grid">
+            <div class="stat-box"><div class="label">Username</div><div class="value" id="valueUsername">...</div></div>
+            <div class="stat-box"><div class="label">Display Name</div><div class="value" id="valueDisplayName">...</div></div>
+            <div class="stat-box"><div class="label">User ID</div><div class="value" id="valueUserId">...</div></div>
+            <div class="stat-box"><div class="label">Création</div><div class="value" id="valueCreated">...</div></div>
+            <div class="stat-box"><div class="label">Compte banni</div><div class="value" id="valueBanned">...</div></div>
+            <div class="stat-box"><div class="label">Lien profil</div><div class="value" id="valueProfileLink"><a id="profileLink" href="#" target="_blank" rel="noopener noreferrer">...</a></div></div>
+          </div>
+
+          <div class="thumb-grid">
+            <div class="thumb-box">
+              <div class="thumb-title">Avatar complet</div>
+              <div class="thumb-image-wrap"><img id="thumbFull" src="https://placehold.co/720x720/10182c/ffffff?text=Chargement" alt="Avatar complet" /></div>
+            </div>
+            <div class="thumb-box">
+              <div class="thumb-title">Headshot</div>
+              <div class="thumb-image-wrap"><img id="thumbHead" src="https://placehold.co/420x420/10182c/ffffff?text=Chargement" alt="Headshot" /></div>
+            </div>
+          </div>
+
+          <div id="summaryBox" class="summary-box">Les données publiques du compte s’afficheront ici.</div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-title">Historique récent</div>
+          <div class="panel-subtitle">Les derniers pseudos recherchés sont sauvegardés localement dans ton navigateur.</div>
+          <div id="recentGrid" class="recent-grid"></div>
+        </section>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const TARGET_USERNAME = "mythique_play";
+    const DEFAULT_USERNAME = "mythique_play";
+    const STORAGE_KEY = "roblox_viewer_recent_users_v2";
 
-    const statusEl = document.getElementById("status");
-    const errorBoxEl = document.getElementById("errorBox");
-    const avatarEl = document.getElementById("avatar");
-    const displayNameEl = document.getElementById("displayName");
-    const usernameEl = document.getElementById("username");
-    const descriptionEl = document.getElementById("description");
-    const valueDisplayNameEl = document.getElementById("valueDisplayName");
-    const valueIdEl = document.getElementById("valueId");
-    const valueCreatedEl = document.getElementById("valueCreated");
-    const valueBannedEl = document.getElementById("valueBanned");
-    const profileLinkEl = document.getElementById("profileLink");
-    const summaryEl = document.getElementById("summary");
-    const reloadBtnEl = document.getElementById("reloadBtn");
+    const usernameInput = document.getElementById("usernameInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const shareBtn = document.getElementById("shareBtn");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const openProfileBtn = document.getElementById("openProfileBtn");
+    const copyUsernameBtn = document.getElementById("copyUsernameBtn");
+
+    const statusText = document.getElementById("statusText");
+    const errorBox = document.getElementById("errorBox");
+    const recentGrid = document.getElementById("recentGrid");
+    const summaryBox = document.getElementById("summaryBox");
+
+    const avatarMain = document.getElementById("avatarMain");
+    const avatarHead = document.getElementById("avatarHead");
+    const thumbFull = document.getElementById("thumbFull");
+    const thumbHead = document.getElementById("thumbHead");
+
+    const displayName = document.getElementById("displayName");
+    const usernameHandle = document.getElementById("usernameHandle");
+    const description = document.getElementById("description");
+    const badgeId = document.getElementById("badgeId");
+    const badgeBan = document.getElementById("badgeBan");
+    const badgeDate = document.getElementById("badgeDate");
+
+    const valueUsername = document.getElementById("valueUsername");
+    const valueDisplayName = document.getElementById("valueDisplayName");
+    const valueUserId = document.getElementById("valueUserId");
+    const valueCreated = document.getElementById("valueCreated");
+    const valueBanned = document.getElementById("valueBanned");
+    const profileLink = document.getElementById("profileLink");
+
+    let currentProfileUrl = "https://www.roblox.com/search/users?keyword=" + encodeURIComponent(DEFAULT_USERNAME);
+    let currentUsername = DEFAULT_USERNAME;
 
     const proxies = [
       (url) => url,
@@ -234,29 +551,33 @@
       (url) => `https://cors.isomorphic-git.org/${url}`
     ];
 
-    async function fetchJsonWithFallback(url) {
-      let lastError = null;
-      for (const buildUrl of proxies) {
-        const testUrl = buildUrl(url);
-        try {
-          const response = await fetch(testUrl, { cache: "no-store" });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return await response.json();
-        } catch (error) {
-          lastError = error;
-        }
-      }
-      throw lastError || new Error("Failed to fetch");
+    function sanitizeUsername(value) {
+      return String(value || "").trim().replace(/^@+/, "").slice(0, 40);
+    }
+
+    function getQueryUsername() {
+      const params = new URLSearchParams(window.location.search);
+      return sanitizeUsername(params.get("user") || "");
+    }
+
+    function setQueryUsername(username) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("user", username);
+      history.replaceState({}, "", url.toString());
+    }
+
+    function setStatus(text) {
+      statusText.textContent = text;
     }
 
     function showError(message) {
-      errorBoxEl.style.display = "block";
-      errorBoxEl.textContent = message;
+      errorBox.style.display = "block";
+      errorBox.textContent = message;
     }
 
     function clearError() {
-      errorBoxEl.style.display = "none";
-      errorBoxEl.textContent = "";
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
     }
 
     function formatDate(dateString) {
@@ -268,81 +589,196 @@
       }
     }
 
-    async function getUserBySearch() {
-      const searchUrl = `https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(TARGET_USERNAME)}&limit=10`;
-      const searchData = await fetchJsonWithFallback(searchUrl);
-      const items = Array.isArray(searchData.data) ? searchData.data : [];
-      const exact = items.find(item => String(item.name).toLowerCase() === TARGET_USERNAME.toLowerCase());
-      if (!exact) throw new Error("Utilisateur introuvable via la recherche Roblox.");
-      return exact;
+    function getFallbackAvatar(text, size = 720) {
+      return `https://placehold.co/${size}x${size}/10182c/ffffff?text=${encodeURIComponent(text)}`;
+    }
+
+    async function fetchJsonWithFallback(url) {
+      let lastError = null;
+      for (const buildUrl of proxies) {
+        const finalUrl = buildUrl(url);
+        try {
+          const response = await fetch(finalUrl, { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return await response.json();
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error("Failed to fetch");
+    }
+
+    async function getUserBySearch(username) {
+      const url = `https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=10`;
+      const data = await fetchJsonWithFallback(url);
+      const items = Array.isArray(data.data) ? data.data : [];
+      const exact = items.find(item => String(item.name || "").toLowerCase() === username.toLowerCase());
+      if (exact) return exact;
+      if (items.length) return items[0];
+      throw new Error("Utilisateur Roblox introuvable.");
     }
 
     async function getUserProfile(userId) {
       return await fetchJsonWithFallback(`https://users.roblox.com/v1/users/${userId}`);
     }
 
-    async function getAvatar(userId) {
-      const data = await fetchJsonWithFallback(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`);
+    async function getAvatarThumbnail(userId, type, size) {
+      const url = type === "head"
+        ? `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=${size}&format=Png&isCircular=false`
+        : `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=${size}&format=Png&isCircular=false`;
+      const data = await fetchJsonWithFallback(url);
       return data && data.data && data.data[0] ? data.data[0].imageUrl : "";
     }
 
-    async function loadUser() {
-      clearError();
-      statusEl.textContent = "Recherche du compte Roblox...";
-      usernameEl.textContent = `@${TARGET_USERNAME}`;
-
-      const basicUser = await getUserBySearch();
-      const userId = basicUser.id;
-
-      statusEl.textContent = "Récupération des détails du profil...";
-      const profile = await getUserProfile(userId);
-
-      statusEl.textContent = "Récupération de l’avatar...";
-      let avatarUrl = "";
-      try {
-        avatarUrl = await getAvatar(userId);
-      } catch {
-        avatarUrl = "";
-      }
-
-      const finalUsername = profile.name || basicUser.name || TARGET_USERNAME;
-      const finalDisplayName = profile.displayName || basicUser.displayName || finalUsername;
-      const finalDescription = profile.description && profile.description.trim() ? profile.description : "Aucune description publique.";
-      const finalCreated = formatDate(profile.created);
-      const finalBanned = profile.isBanned ? "Oui" : "Non";
-      const finalProfileUrl = `https://www.roblox.com/users/${userId}/profile`;
-
-      displayNameEl.textContent = finalDisplayName;
-      usernameEl.textContent = `@${finalUsername}`;
-      descriptionEl.textContent = finalDescription;
-      valueDisplayNameEl.textContent = finalDisplayName;
-      valueIdEl.textContent = String(userId);
-      valueCreatedEl.textContent = finalCreated;
-      valueBannedEl.textContent = finalBanned;
-      profileLinkEl.href = finalProfileUrl;
-      profileLinkEl.textContent = finalProfileUrl;
-      summaryEl.innerHTML = `Nom Roblox : <strong>${finalUsername}</strong><br>Display Name : <strong>${finalDisplayName}</strong><br>ID : <strong>${userId}</strong><br>Création : <strong>${finalCreated}</strong><br>Banni : <strong>${finalBanned}</strong>`;
-
-      if (avatarUrl) {
-        avatarEl.src = avatarUrl;
-      } else {
-        avatarEl.src = "https://placehold.co/720x720/10182c/ffffff?text=Avatar+indisponible";
-      }
-
-      statusEl.textContent = "Profil chargé avec succès.";
+    function saveRecentUser(profile) {
+      const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const filtered = current.filter(item => item.username.toLowerCase() !== profile.username.toLowerCase());
+      filtered.unshift(profile);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered.slice(0, 8)));
+      renderRecentUsers();
     }
 
-    reloadBtnEl.addEventListener("click", () => {
-      loadUser().catch((error) => {
-        statusEl.textContent = "Impossible de charger le profil.";
-        showError(`Erreur lors de la récupération : ${error.message || "Failed to fetch"}. Roblox ou le proxy utilisé bloque probablement les requêtes externes depuis GitHub Pages.`);
+    function renderRecentUsers() {
+      const items = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      if (!items.length) {
+        recentGrid.innerHTML = '<div class="empty">Aucun historique pour le moment. Recherche un pseudo Roblox pour l’ajouter ici.</div>';
+        return;
+      }
+      recentGrid.innerHTML = items.map(item => `
+        <div class="recent-box" data-username="${item.username}">
+          <div class="recent-name">${item.displayName || item.username}</div>
+          <div class="recent-handle">@${item.username}</div>
+        </div>
+      `).join("");
+      recentGrid.querySelectorAll(".recent-box").forEach(box => {
+        box.addEventListener("click", () => {
+          const username = box.getAttribute("data-username");
+          usernameInput.value = username;
+          loadUser(username);
+        });
       });
+    }
+
+    async function copyText(text, successText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus(successText);
+      } catch {
+        setStatus("Copie impossible depuis ce navigateur.");
+      }
+    }
+
+    function setLoadingState(username) {
+      const safeName = sanitizeUsername(username) || DEFAULT_USERNAME;
+      currentUsername = safeName;
+      displayName.textContent = "Chargement...";
+      usernameHandle.textContent = `@${safeName}`;
+      description.textContent = "Récupération des informations publiques du profil...";
+      badgeId.textContent = "ID: ...";
+      badgeBan.textContent = "Banni: ...";
+      badgeDate.textContent = "Création: ...";
+      valueUsername.textContent = safeName;
+      valueDisplayName.textContent = "...";
+      valueUserId.textContent = "...";
+      valueCreated.textContent = "...";
+      valueBanned.textContent = "...";
+      profileLink.textContent = "...";
+      summaryBox.textContent = "Les données publiques du compte s’afficheront ici.";
+      avatarMain.src = getFallbackAvatar("Chargement", 720);
+      avatarHead.src = getFallbackAvatar("Chargement", 420);
+      thumbFull.src = getFallbackAvatar("Chargement", 720);
+      thumbHead.src = getFallbackAvatar("Chargement", 420);
+    }
+
+    async function loadUser(requestedUsername) {
+      const username = sanitizeUsername(requestedUsername || usernameInput.value || DEFAULT_USERNAME) || DEFAULT_USERNAME;
+      usernameInput.value = username;
+      setQueryUsername(username);
+      clearError();
+      setLoadingState(username);
+      setStatus("Recherche du compte Roblox...");
+
+      try {
+        const basicUser = await getUserBySearch(username);
+        const userId = basicUser.id;
+
+        setStatus("Récupération des détails du profil...");
+        const profile = await getUserProfile(userId);
+
+        setStatus("Récupération des miniatures d’avatar...");
+        const [fullAvatar, headAvatar] = await Promise.allSettled([
+          getAvatarThumbnail(userId, "full", "720x720"),
+          getAvatarThumbnail(userId, "head", "420x420")
+        ]);
+
+        const finalUsername = profile.name || basicUser.name || username;
+        const finalDisplayName = profile.displayName || basicUser.displayName || finalUsername;
+        const finalDescription = profile.description && profile.description.trim() ? profile.description : "Aucune description publique.";
+        const finalCreated = formatDate(profile.created);
+        const finalBanned = profile.isBanned ? "Oui" : "Non";
+        currentProfileUrl = `https://www.roblox.com/users/${userId}/profile`;
+        currentUsername = finalUsername;
+
+        const fullAvatarUrl = fullAvatar.status === "fulfilled" && fullAvatar.value ? fullAvatar.value : getFallbackAvatar(finalUsername, 720);
+        const headAvatarUrl = headAvatar.status === "fulfilled" && headAvatar.value ? headAvatar.value : getFallbackAvatar(finalUsername, 420);
+
+        displayName.textContent = finalDisplayName;
+        usernameHandle.textContent = `@${finalUsername}`;
+        description.textContent = finalDescription;
+
+        badgeId.textContent = `ID: ${userId}`;
+        badgeBan.textContent = `Banni: ${finalBanned}`;
+        badgeDate.textContent = `Création: ${finalCreated}`;
+
+        valueUsername.textContent = finalUsername;
+        valueDisplayName.textContent = finalDisplayName;
+        valueUserId.textContent = String(userId);
+        valueCreated.textContent = finalCreated;
+        valueBanned.textContent = finalBanned;
+        profileLink.href = currentProfileUrl;
+        profileLink.textContent = currentProfileUrl;
+
+        avatarMain.src = fullAvatarUrl;
+        thumbFull.src = fullAvatarUrl;
+        avatarHead.src = headAvatarUrl;
+        thumbHead.src = headAvatarUrl;
+
+        summaryBox.innerHTML = `Nom Roblox : <strong>${finalUsername}</strong><br>Display Name : <strong>${finalDisplayName}</strong><br>ID : <strong>${userId}</strong><br>Création : <strong>${finalCreated}</strong><br>Banni : <strong>${finalBanned}</strong><br>Description : <strong>${finalDescription.replace(/</g, "&lt;")}</strong>`;
+
+        saveRecentUser({ username: finalUsername, displayName: finalDisplayName, userId });
+        setStatus("Profil chargé avec succès.");
+      } catch (error) {
+        setStatus("Impossible de charger le profil.");
+        showError(`Erreur lors de la récupération : ${error.message || "Failed to fetch"}. Certains réseaux ou navigateurs peuvent bloquer les requêtes externes vers Roblox.`);
+        avatarMain.src = getFallbackAvatar(username, 720);
+        avatarHead.src = getFallbackAvatar(username, 420);
+        thumbFull.src = getFallbackAvatar(username, 720);
+        thumbHead.src = getFallbackAvatar(username, 420);
+      }
+    }
+
+    searchBtn.addEventListener("click", () => loadUser(usernameInput.value));
+    refreshBtn.addEventListener("click", () => loadUser(currentUsername));
+    usernameInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") loadUser(usernameInput.value);
     });
 
-    loadUser().catch((error) => {
-      statusEl.textContent = "Impossible de charger le profil.";
-      showError(`Erreur lors de la récupération : ${error.message || "Failed to fetch"}. Roblox ou le proxy utilisé bloque probablement les requêtes externes depuis GitHub Pages.`);
+    shareBtn.addEventListener("click", async () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set("user", currentUsername);
+      await copyText(url.toString(), "Lien copié dans le presse-papiers.");
     });
+
+    copyUsernameBtn.addEventListener("click", async () => {
+      await copyText(currentUsername, "Pseudo copié.");
+    });
+
+    openProfileBtn.addEventListener("click", () => {
+      window.open(currentProfileUrl, "_blank", "noopener,noreferrer");
+    });
+
+    renderRecentUsers();
+    loadUser(getQueryUsername() || DEFAULT_USERNAME);
   </script>
 </body>
 </html>
