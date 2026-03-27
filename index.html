@@ -1,224 +1,418 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Gallery</title>
+  <title>Roblox User Viewer</title>
   <style>
     * {
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(20, 28, 51, 0.85);
+      --panel-2: rgba(29, 39, 70, 0.9);
+      --text: #f5f7ff;
+      --muted: #aab6d3;
+      --accent: #5ea0ff;
+      --accent-2: #7d5cff;
+      --border: rgba(255,255,255,0.08);
+      --shadow: 0 18px 45px rgba(0,0,0,0.35);
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f1117;
-      color: white;
+      min-height: 100vh;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(125, 92, 255, 0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(94, 160, 255, 0.22), transparent 26%),
+        linear-gradient(160deg, #060914 0%, #0b1020 60%, #0f1630 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
-    header {
-      padding: 20px;
-      text-align: center;
-      background: #151926;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    header p {
-      margin: 8px 0 0;
-      color: #b8bfd3;
-    }
-
-    .gallery {
+    .app {
+      width: 100%;
+      max-width: 1100px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      padding: 20px;
+      grid-template-columns: 360px 1fr;
+      gap: 22px;
     }
 
     .card {
-      background: #1a1f2e;
-      border-radius: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
       overflow: hidden;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+    .profile {
+      padding: 24px;
+      text-align: center;
     }
 
-    .card img {
+    .avatar-wrap {
+      width: 250px;
+      height: 250px;
+      margin: 0 auto 18px;
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(125,92,255,0.25), rgba(94,160,255,0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .avatar-wrap img {
       width: 100%;
-      height: 320px;
+      height: 100%;
       object-fit: cover;
       display: block;
-      background: #0b0d12;
     }
 
-    .card .info {
-      padding: 10px;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(94,160,255,0.14);
+      border: 1px solid rgba(94,160,255,0.25);
+      color: #dce9ff;
+      font-size: 14px;
+      margin-bottom: 16px;
     }
 
-    .card a {
-      color: #8ab4ff;
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.1;
+    }
+
+    .handle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .description {
+      margin-top: 16px;
+      color: #d8e1f8;
+      line-height: 1.6;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 74px;
+      text-align: left;
+    }
+
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(94,160,255,0.25);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .info-box {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 19px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .footer-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: #e8efff;
+      font-size: 14px;
+      width: fit-content;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #7cff9e;
+      box-shadow: 0 0 14px rgba(124,255,158,0.7);
+    }
+
+    .error {
+      color: #ffd4d4;
+      background: rgba(255, 76, 76, 0.1);
+      border: 1px solid rgba(255, 76, 76, 0.2);
+      padding: 14px;
+      border-radius: 16px;
+      display: none;
+    }
+
+    a.profile-link {
+      color: #cfe1ff;
       text-decoration: none;
-      word-break: break-all;
-      font-size: 12px;
     }
 
-    .card a:hover {
+    a.profile-link:hover {
       text-decoration: underline;
     }
 
-    .counter {
-      margin-top: 6px;
-      font-size: 14px;
-      color: #9ca3af;
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .avatar-wrap {
+        width: 220px;
+        height: 220px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .title {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Image Gallery</h1>
-    <p>All links displayed as images</p>
-    <div class="counter" id="counter"></div>
-  </header>
+  <main class="app">
+    <section class="card profile">
+      <div class="avatar-wrap">
+        <img id="avatar" alt="Avatar Roblox" src="https://placehold.co/720x720/10182c/ffffff?text=Chargement" />
+      </div>
+      <div class="badge">Profil Roblox</div>
+      <h1 id="displayName">Chargement...</h1>
+      <div class="handle" id="username">@mythique_play</div>
+      <div class="description" id="description">Récupération des informations du compte...</div>
+    </section>
 
-  <main class="gallery" id="gallery"></main>
+    <section class="card content">
+      <div class="topbar">
+        <div>
+          <div class="title">Utilisateur ciblé : mythique_play</div>
+          <div class="subtitle">Cette page récupère automatiquement les informations publiques et l’avatar Roblox du compte demandé.</div>
+        </div>
+        <button class="button" id="refreshBtn">Actualiser</button>
+      </div>
+
+      <div class="status"><span class="dot"></span><span id="statusText">Connexion à Roblox...</span></div>
+      <div class="error" id="errorBox"></div>
+
+      <div class="grid">
+        <div class="info-box">
+          <div class="label">Username</div>
+          <div class="value" id="valueUsername">mythique_play</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Display Name</div>
+          <div class="value" id="valueDisplayName">...</div>
+        </div>
+        <div class="info-box">
+          <div class="label">User ID</div>
+          <div class="value" id="valueId">...</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Compte créé le</div>
+          <div class="value" id="valueCreated">...</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Compte banni</div>
+          <div class="value" id="valueBanned">...</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Profil Roblox</div>
+          <div class="value"><a class="profile-link" id="profileLink" href="#" target="_blank" rel="noopener noreferrer">Ouvrir le profil</a></div>
+        </div>
+      </div>
+
+      <div class="footer-box" id="rawSummary">
+        Les données s’afficheront ici après récupération.
+      </div>
+    </section>
+  </main>
 
   <script>
-    const IMAGES = [
-      "https://files.catbox.moe/pwuafm.png",
-      "https://files.catbox.moe/7qezl8.jpg",
-      "https://files.catbox.moe/53y8r7.jpg",
-      "https://files.catbox.moe/o37bdy.jpg",
-      "https://files.catbox.moe/niajsg.jpg",
-      "https://files.catbox.moe/bzgnu2.jpg",
-      "https://files.catbox.moe/2colmi.jpg",
-      "https://files.catbox.moe/2lgvrs.jpg",
-      "https://files.catbox.moe/gc0xs0.jpg",
-      "https://files.catbox.moe/iwz838.jpg",
-      "https://files.catbox.moe/3mbobn.jpg",
-      "https://files.catbox.moe/599nt4.jpg",
-      "https://files.catbox.moe/hdl9jr.jpg",
-      "https://files.catbox.moe/v9k70h.jpg",
-      "https://files.catbox.moe/iqslcm.jpg",
-      "https://files.catbox.moe/yoms45.jpg",
-      "https://files.catbox.moe/k08l9v.jpg",
-      "https://files.catbox.moe/1u7v8q.jpg",
-      "https://files.catbox.moe/2owx9m.jpg",
-      "https://files.catbox.moe/yhb92u.jpg",
-      "https://files.catbox.moe/i882u5.jpg",
-      "https://files.catbox.moe/v6wxx1.jpg",
-      "https://files.catbox.moe/d9da30.jpg",
-      "https://files.catbox.moe/hi3kk8.jpg",
-      "https://files.catbox.moe/khyjc6.jpg",
-      "https://files.catbox.moe/em92di.jpg",
-      "https://files.catbox.moe/4jy87e.jpg",
-      "https://files.catbox.moe/hidco6.jpg",
-      "https://files.catbox.moe/siz8fy.jpg",
-      "https://files.catbox.moe/k068rj.jpg",
-      "https://files.catbox.moe/2mu03h.jpg",
-      "https://files.catbox.moe/6fh4i6.jpg",
-      "https://files.catbox.moe/4x3b5e.jpg",
-      "https://files.catbox.moe/ahsx0a.jpg",
-      "https://files.catbox.moe/wtaaui.jpg",
-      "https://files.catbox.moe/39pp4a.jpg",
-      "https://files.catbox.moe/8duqdw.jpg",
-      "https://files.catbox.moe/y8v236.jpg",
-      "https://files.catbox.moe/d6h9aj.jpg",
-      "https://files.catbox.moe/9bfyb5.jpg",
-      "https://files.catbox.moe/m24ccc.jpg",
-      "https://files.catbox.moe/6tm1qx.jpg",
-      "https://files.catbox.moe/g6pb62.jpg",
-      "https://files.catbox.moe/bao4g3.jpg",
-      "https://files.catbox.moe/o2hh51.jpg",
-      "https://files.catbox.moe/ojt28p.jpg",
-      "https://files.catbox.moe/a3cg18.jpg",
-      "https://files.catbox.moe/tazpvd.jpg",
-      "https://files.catbox.moe/g0sein.jpg",
-      "https://files.catbox.moe/yl2x9f.jpg",
-      "https://files.catbox.moe/t9rxym.jpg",
-      "https://files.catbox.moe/gc2f5m.jpg",
-      "https://files.catbox.moe/e8zn8u.jpg",
-      "https://files.catbox.moe/r8zw1p.jpg",
-      "https://files.catbox.moe/eaqdzj.jpg",
-      "https://files.catbox.moe/7xeyko.jpg",
-      "https://files.catbox.moe/4ldim3.jpg",
-      "https://files.catbox.moe/kg7o7k.jpg",
-      "https://files.catbox.moe/sr3qvi.jpg",
-      "https://files.catbox.moe/wq9wbd.jpg",
-      "https://files.catbox.moe/d5zo25.jpg",
-      "https://files.catbox.moe/jeh4ad.jpg",
-      "https://files.catbox.moe/lvi7dc.jpg",
-      "https://files.catbox.moe/ow8sd4.jpg",
-      "https://files.catbox.moe/3mks8e.jpg",
-      "https://files.catbox.moe/gulxms.jpg",
-      "https://files.catbox.moe/vbj7kz.jpg",
-      "https://files.catbox.moe/7hj6jr.jpg",
-      "https://files.catbox.moe/u56leb.jpg",
-      "https://files.catbox.moe/d9m1ks.jpg",
-      "https://files.catbox.moe/ie9kwc.png",
-      "https://files.catbox.moe/03pqov.png",
-      "https://files.catbox.moe/ufh4mg.png",
-      "https://files.catbox.moe/d7sqxp.png",
-      "https://files.catbox.moe/yz5ft9.png",
-      "https://files.catbox.moe/r96bj5.png",
-      "https://files.catbox.moe/dknyog.png",
-      "https://files.catbox.moe/0yr2do.png",
-      "https://files.catbox.moe/fu9mwt.png",
-      "https://files.catbox.moe/aia7be.png",
-      "https://files.catbox.moe/1sfmqc.jpg",
-      "https://files.catbox.moe/j8ktk9.jpg",
-      "https://files.catbox.moe/on9vh6.jpg",
-      "https://files.catbox.moe/mqove4.jpg",
-      "https://files.catbox.moe/mt7snk.jpg",
-      "https://files.catbox.moe/06hfyo.jpg",
-      "https://files.catbox.moe/vhkxgz.jpg",
-      "https://files.catbox.moe/mw9d7m.jpg",
-      "https://files.catbox.moe/ghcg9g.jpg",
-      "https://files.catbox.moe/oowbfx.jpg",
-      "https://files.catbox.moe/yfcgra.jpg",
-      "https://files.catbox.moe/j027dv.jpg",
-      "https://files.catbox.moe/1r6rj9.jpg"
-    ];
+    const TARGET_USERNAME = "mythique_play";
 
-    const gallery = document.getElementById("gallery");
-    const counter = document.getElementById("counter");
-    counter.textContent = `${IMAGES.length} images`;
+    const avatarEl = document.getElementById("avatar");
+    const displayNameEl = document.getElementById("displayName");
+    const usernameEl = document.getElementById("username");
+    const descriptionEl = document.getElementById("description");
+    const statusTextEl = document.getElementById("statusText");
+    const errorBoxEl = document.getElementById("errorBox");
+    const valueUsernameEl = document.getElementById("valueUsername");
+    const valueDisplayNameEl = document.getElementById("valueDisplayName");
+    const valueIdEl = document.getElementById("valueId");
+    const valueCreatedEl = document.getElementById("valueCreated");
+    const valueBannedEl = document.getElementById("valueBanned");
+    const profileLinkEl = document.getElementById("profileLink");
+    const rawSummaryEl = document.getElementById("rawSummary");
+    const refreshBtnEl = document.getElementById("refreshBtn");
 
-    IMAGES.forEach((url, index) => {
-      const card = document.createElement("div");
-      card.className = "card";
+    async function fetchJson(url, options = {}) {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status} sur ${url}`);
+      }
+      return response.json();
+    }
 
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = `Image ${index + 1}`;
-      img.loading = "lazy";
-      img.referrerPolicy = "no-referrer";
+    function formatDate(isoString) {
+      if (!isoString) return "Non disponible";
+      const date = new Date(isoString);
+      return new Intl.DateTimeFormat("fr-FR", {
+        dateStyle: "long",
+        timeStyle: "short"
+      }).format(date);
+    }
 
-      const info = document.createElement("div");
-      info.className = "info";
+    function setError(message) {
+      errorBoxEl.style.display = "block";
+      errorBoxEl.textContent = message;
+      statusTextEl.textContent = "Erreur lors de la récupération";
+    }
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = url;
+    function clearError() {
+      errorBoxEl.style.display = "none";
+      errorBoxEl.textContent = "";
+    }
 
-      info.appendChild(link);
-      card.appendChild(img);
-      card.appendChild(info);
-      gallery.appendChild(card);
+    async function loadRobloxUser() {
+      clearError();
+      statusTextEl.textContent = "Recherche de l’utilisateur...";
+      valueUsernameEl.textContent = TARGET_USERNAME;
+      usernameEl.textContent = `@${TARGET_USERNAME}`;
+
+      const lookup = await fetchJson("https://users.roproxy.com/v1/usernames/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          usernames: [TARGET_USERNAME],
+          excludeBannedUsers: false
+        })
+      });
+
+      if (!lookup.data || !lookup.data.length) {
+        throw new Error("Utilisateur Roblox introuvable.");
+      }
+
+      const user = lookup.data[0];
+      const userId = user.id;
+
+      statusTextEl.textContent = "Récupération du profil...";
+      const profile = await fetchJson(`https://users.roproxy.com/v1/users/${userId}`);
+
+      statusTextEl.textContent = "Récupération de l’avatar...";
+      const avatarData = await fetchJson(`https://thumbnails.roproxy.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`);
+      const avatarUrl = avatarData.data && avatarData.data[0] ? avatarData.data[0].imageUrl : "";
+
+      displayNameEl.textContent = profile.displayName || user.name || TARGET_USERNAME;
+      usernameEl.textContent = `@${profile.name || TARGET_USERNAME}`;
+      descriptionEl.textContent = profile.description && profile.description.trim() ? profile.description : "Aucune description publique.";
+      valueDisplayNameEl.textContent = profile.displayName || "Non disponible";
+      valueIdEl.textContent = String(profile.id || userId);
+      valueCreatedEl.textContent = formatDate(profile.created);
+      valueBannedEl.textContent = profile.isBanned ? "Oui" : "Non";
+      profileLinkEl.href = `https://www.roblox.com/users/${userId}/profile`;
+      avatarEl.src = avatarUrl || "https://placehold.co/720x720/10182c/ffffff?text=Avatar+indisponible";
+
+      rawSummaryEl.innerHTML = `Nom Roblox : <strong>${profile.name || TARGET_USERNAME}</strong><br>Display Name : <strong>${profile.displayName || "Non disponible"}</strong><br>ID : <strong>${profile.id || userId}</strong><br>Création : <strong>${formatDate(profile.created)}</strong><br>Banni : <strong>${profile.isBanned ? "Oui" : "Non"}</strong>`;
+
+      statusTextEl.textContent = "Profil chargé avec succès";
+    }
+
+    refreshBtnEl.addEventListener("click", async () => {
+      try {
+        await loadRobloxUser();
+      } catch (error) {
+        setError(error.message || "Erreur inconnue.");
+      }
+    });
+
+    loadRobloxUser().catch((error) => {
+      setError(error.message || "Erreur inconnue.");
     });
   </script>
 </body>
